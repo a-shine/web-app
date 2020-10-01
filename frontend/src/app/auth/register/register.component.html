@@ -1,0 +1,43 @@
+<div id=register__page>
+  <div id=register__container class=container>
+
+    <div id=register__container__header__wrapper>
+      <!-- <h1 id=register__container__header__text>Sign Up</h1> -->
+      <mat-icon class=center-text svgIcon="logo" style="height: 80px; width:80px;"></mat-icon>
+    </div>
+
+    <form #f="ngForm" [formGroup]="registerForm">
+
+      <div class=input__wrapper>
+        <label>First Name</label>
+        <input class="large-input" formControlName="firstName" type="text" id="firstNameInput">
+      </div>
+      <div class=input__wrapper>
+        <label>Surname</label>
+        <input class="large-input" formControlName="lastName" type="text" id="lastNameInput">
+      </div>
+      <div class=input__wrapper>
+        <label>Email</label>
+        <input class="large-input" formControlName="email" type="email" id="emailInput">
+      </div>
+
+      <div class=input__wrapper>
+        <label>Password</label>
+        <input class=large-input formControlName="password" type="password" id="passwordInput">
+      </div>
+
+      <div class=input__wrapper>
+        <label>Confirm Password</label>
+        <input class=large-input formControlName="confirmPassword" type="password" id="confirmPasswordInput">
+      </div>
+
+      <br>
+
+      <div style="height: 50px;">
+        <a [routerLink]="['/login']" style="float: left;  line-height: 50px;">I already have an account</a>
+        <button (click)="register()" [disabled]="f.invalid" class="large-wireframe-btn" style="float: right;">Register</button>
+      </div>
+    </form>
+
+  </div>
+</div>

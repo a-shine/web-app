@@ -1,0 +1,118 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Loadbalancer & Security Group",
+    "Resources": {
+        "LoadBalancer": {
+            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties": {
+                "Name": "frontend-ecs-services",
+                "Subnets": [
+                    {
+                        "Fn::ImportValue": "project-n-Subnet1"
+                    },
+                    {
+                        "Fn::ImportValue": "project-n-Subnet2"
+                    }
+                ],
+                "SecurityGroups": [
+                    {
+                        "Ref": "LoadBalancerSecurityGroup"
+                    }
+                ]
+            }
+        },
+        "LoadBalancerListener": {
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": {
+                "LoadBalancerArn": {
+                    "Ref": "LoadBalancer"
+                },
+                "Protocol": "HTTP",
+                "Port": 80,
+                "DefaultActions": [
+                    {
+                        "Type": "forward",
+                        "TargetGroupArn": {
+                            "Ref": "DefaultTargetGroup"
+                        }
+                    }
+                ]
+            }
+        },
+        "LoadBalancerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Security group for loadbalancer to services on ECS",
+                "VpcId": {
+                    "Fn::ImportValue": "project-n-VPC"
+                },
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "IpProtocol": -1
+                    }
+                ]
+            }
+        },
+        "DefaultTargetGroup": {
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": {
+                "Name": "project-n-frontend",
+                "VpcId": {
+                    "Fn::ImportValue": "project-n-VPC"
+                },
+                "Protocol": "HTTP",
+                "Port": "80"
+            }
+        },
+        "ContainerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "VpcId": {
+                    "Fn::ImportValue": "project-n-VPC"
+                },
+                "GroupDescription": "for ecs containers",
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "LoadBalancerSecurityGroup"
+                        },
+                        "IpProtocol": -1
+                    }
+                ]
+            }
+        }
+    },
+    "Outputs": {
+        "Listener": {
+            "Description": "listener port 80",
+            "Value": {
+                "Ref": "LoadBalancerListener"
+            },
+            "Export": {
+                "Name": "project-n-frontend-listener"
+            }
+        },
+        "ContainerSecurityGroup": {
+            "Description": "container security group",
+            "Value": {
+                "Ref": "ContainerSecurityGroup"
+            },
+            "Export": {
+                "Name": "project-n-frontend-security-group"
+            }
+        },
+        "LoadBalancerDNS": {
+            "Description": "Domain name for the loadbalancer",
+            "Value": {
+                "Fn::GetAtt": [
+                    "LoadBalancer",
+                    "DNSName"
+                ]
+            },
+            "Export": {
+                "Name": "project-n-domain-name"
+            }
+        }
+    }
+}

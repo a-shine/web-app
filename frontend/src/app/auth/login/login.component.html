@@ -1,0 +1,31 @@
+<div id=login__page>
+  <div id=login__container class=container>
+
+    <div id=login__container__header__wrapper>
+      <!-- <h1 id=login__container__header__text>Login</h1> -->
+      <mat-icon class=center-text svgIcon="logo" style="height: 80px; width:80px;"></mat-icon>
+    </div>
+
+    <form #f="ngForm" [formGroup]="loginForm">
+
+      <div class=input__wrapper>
+        <label>Email</label>
+        <input class="large-input" required formControlName="email" type="email" id="emailInput">
+      </div>
+
+      <div class=input__wrapper id=input__wrapper--password>
+        <label>Password</label>
+        <input class="large-input" required formControlName="password" type="password" id="passwordInput">
+        <a [routerLink]="['/reset-password']" style="float: right;">Forgot password</a>
+      </div>
+      
+      <br>
+
+      <div style="height: 50px;">
+        <a [routerLink]="['/signup']" style="float: left; line-height: 50px;">Create an account</a>
+        <button (click)="login()" [disabled]="f.invalid" class=large-wireframe-btn style="float: right;">Login</button>
+      </div>
+    </form>
+
+  </div>
+</div>

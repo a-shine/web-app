@@ -1,0 +1,4 @@
+node_modules
+
+# Do not ignore the '.dockerignore' file
+# https://codefresh.io/docker-tutorial/not-ignore-dockerignore-2/

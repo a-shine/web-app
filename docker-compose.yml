@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+        POSTGRES_PASSWORD: devpass123
+  broker:
+    image: redis
+    command: redis-server --requirepass devpass123
+    ports:
+      - "6379:6379"
+  backend:
+    build: ./backend
+    command: /bin/bash -c "sleep 7; python manage.py makemigrations; python manage.py migrate; python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/usr/src/app # this will enable changes made to the angular app reflect in the container
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  frontend:
+    build: ./frontend
+    command: /bin/bash -c "ng serve --host 0.0.0.0 --port 4200"
+    ports:
+      - "4200:4200"
+    volumes: 
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules # you have to do this cause the .dockerignore only works at build so when you mount the volume it creates another node_module
+                                  # FIX for node modules being overwritten at runtime https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
