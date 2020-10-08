@@ -1,0 +1,23 @@
+.x_centered {
+    height: 100%;
+    width: 100%;
+  
+    display: flex;
+  
+    justify-content: center;
+    align-items: center;
+  }
+  
+  a {
+    color: rgba(0, 0, 0, 0.67);
+    text-decoration: none;
+  }
+  
+  .warning {
+    color: red;
+  }
+  
+  ::ng-deep .mat-step-header .mat-step-icon-selected {
+    background-color: black;
+  }
+  

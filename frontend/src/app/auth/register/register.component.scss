@@ -1,46 +1,9 @@
-#register__page {
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#register__container {
-  width: 470px;
-
-  display: flex;
-  flex-direction: column;
-
-  padding: 70px 60px 70px 60px;
-  border: 2px solid black;
-}
-
-#register__container__header__wrapper {
-  display: flex;
-  margin-bottom: 50px;
-}
-
-#register__container__header__wrapper h1 {
-  font-weight: 300;
-  font-size: 36px;
-}
-
-.input__wrapper {
-  position: relative;
-  margin-bottom: 30px;
-}
-
-a {
-  color: rgba(0,0,0,0.67);
-  text-decoration: none;
-}
-
-.warning {
-  color: red;
-}
+@import 'src/styles.scss';
 
 mat-form-field {
   width: 100%;
+}
+
+#stuff_at_the_top {
+  margin-bottom: 15px;
 }

@@ -1,171 +1,66 @@
-<!-- <div id=register__page>
-  <div id=register__container class=container>
-
-    <div id=register__container__header__wrapper>
-      <mat-icon class=center-text svgIcon="logo" style="height: 80px; width:80px;"></mat-icon>
-    </div>
-
-    <form #f="ngForm" [formGroup]="registerForm">
-
-      <div class=input__wrapper>
-        <label>First Name</label>
-        <input class="large-input" formControlName="firstName" type="text" id="firstNameInput">
+<div class="x_centered">
+  <mat-card style="width: 600px" class="mat-elevation-z0">
+    <mat-card-title>Register</mat-card-title>
+    <mat-card-content>
+      <div id=stuff_at_the_top>
+        <a [routerLink]="['/login']">I already have an account</a>
+        <p *ngIf="this.failed" class="warning">Register failed.</p>
+        <p *ngIf="this.invalidForm" class="warning">Invalid form.</p>
+        <p *ngIf="this.passMatch" class="warning">Passwords do not match.</p>
       </div>
-      <div class=input__wrapper>
-        <label>Surname</label>
-        <input class="large-input" formControlName="lastName" type="text" id="lastNameInput">
-      </div>
-      <div class=input__wrapper>
-        <label>Email</label>
-        <input class="large-input" formControlName="email" type="email" id="emailInput">
-      </div>
-
-      <div class=input__wrapper>
-        <label>Password</label>
-        <input class=large-input formControlName="password" type="password" id="passwordInput">
-      </div>
-
-      <div class=input__wrapper>
-        <label>Confirm Password</label>
-        <input class=large-input formControlName="confirmPassword" type="password" id="confirmPasswordInput">
-      </div>
-
-      <br>
-
-      <div style="height: 50px;">
-        
-        <button (click)="register()" [disabled]="f.invalid" class="large-wireframe-btn" style="float: right;">Register</button>
-      </div>
-    </form>
-
-  </div>
-</div> -->
-
-<mat-card
-  style="max-width: 600px; border: 2px solid black"
-  class="mat-elevation-z0"
->
-  <mat-card-title>Register</mat-card-title>
-  <mat-card-content>
-    <a [routerLink]="['/login']">I already have an account</a>
-    <p *ngIf="this.failed" class="warning">Register failed.</p>
-    <p *ngIf="this.passMatch" class="warning">Passwords do not match.</p>
-    <mat-vertical-stepper [linear]="true" #stepper>
-      <mat-step [stepControl]="firstNameForm">
-        <form [formGroup]="firstNameForm">
-          <ng-template matStepLabel>Fill in your First Name</ng-template>
-          <mat-form-field appearance="outline">
-            <mat-label>First Name</mat-label>
-            <input
-              type="text"
-              matInput
-              placeholder="First Name"
-              formControlName="firstName"
-              required
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              [disabled]="firstNameForm.invalid"
-              matStepperNext
-            >
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </mat-form-field>
-        </form>
-      </mat-step>
-      <mat-step [stepControl]="lastNameForm">
-        <form [formGroup]="lastNameForm">
-          <ng-template matStepLabel>Fill in your Last Name</ng-template>
-          <mat-form-field appearance="outline">
-            <mat-label>Last Name</mat-label>
-            <input
-              type="text"
-              matInput
-              placeholder="Last Name"
-              formControlName="lastName"
-              required
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              [disabled]="lastNameForm.invalid"
-              matStepperNext
-            >
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </mat-form-field>
-        </form>
-      </mat-step>
-      <mat-step [stepControl]="emailForm">
-        <form [formGroup]="emailForm">
-          <ng-template matStepLabel>Fill in your email</ng-template>
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input
-              type="email"
-              matInput
-              placeholder="Email Name"
-              formControlName="email"
-              required
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              [disabled]="emailForm.invalid"
-              matStepperNext
-            >
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </mat-form-field>
-        </form>
-      </mat-step>
-      <mat-step [stepControl]="passwordForm">
-        <form [formGroup]="passwordForm">
-          <ng-template matStepLabel>Fill in your password</ng-template>
-          <mat-form-field appearance="outline">
-            <mat-label>Password</mat-label>
-            <input
-              type="password"
-              matInput
-              placeholder="Password"
-              formControlName="password"
-              required
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              [disabled]="passwordForm.invalid"
-              matStepperNext
-            >
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </mat-form-field>
-        </form>
-      </mat-step>
-      <mat-step [stepControl]="confirmPasswordForm">
-        <form [formGroup]="confirmPasswordForm">
-          <ng-template matStepLabel>Confirm your password</ng-template>
-          <mat-form-field appearance="outline">
-            <mat-label>Confirm password</mat-label>
-            <input
-              type="password"
-              matInput
-              placeholder="Password"
-              formControlName="password"
-              required
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              [disabled]="confirmPasswordForm.invalid"
-              (click)="register()"
-            >
-              <mat-icon>done</mat-icon>
-            </button>
-          </mat-form-field>
-        </form>
-      </mat-step>
-    </mat-vertical-stepper>
-  </mat-card-content>
-</mat-card>
+      <form [formGroup]="registerForm">
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="First Name"
+            formControlName="firstName"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="Last Name"
+            formControlName="lastName"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input
+            type="email"
+            matInput
+            placeholder="Email"
+            formControlName="email"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            type="password"
+            matInput
+            placeholder="Password"
+            formControlName="password"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm Password</mat-label>
+          <input
+            type="password"
+            matInput
+            placeholder="Confirm Password"
+            formControlName="confirmPassword"
+            required
+          />
+        </mat-form-field>
+      </form>
+      <button mat-button (click)="register()" style="float: right;" [disabled]="registerForm.invalid">Register</button>
+    </mat-card-content>
+  </mat-card>
+</div>
