@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router'
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder} from '@angular/forms';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -10,16 +10,21 @@ import { AuthService } from '../auth.service';
   providers: [ AuthService ]
 })
 export class LoginComponent implements OnInit {
+  // @ViewChild("password") passwordField: ElementRef;
+  emailForm:FormGroup;
+  passwordForm: FormGroup;
+  failed:boolean = false;
 
-  loginForm:FormGroup = new FormGroup({
-    email: new FormControl(null, [Validators.required, Validators.email]),
-    password: new FormControl(null, Validators.required)
-  })
-
-  constructor(private router:Router, private authService:AuthService) { }
+  constructor(private router:Router, private authService:AuthService, private formBuilder: FormBuilder) { }
   user;
 
   ngOnInit(): void {
+    this.emailForm = this.formBuilder.group({
+      email: new FormControl(null, [Validators.required, Validators.email]),
+    });
+    this.passwordForm = this.formBuilder.group({
+      password: new FormControl(null, Validators.required)
+    })
   }
 
   moveToRegister(){
@@ -27,23 +32,30 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
-    if (!this.loginForm.valid){
+    if (!this.emailForm.valid || !this.passwordForm.valid){
       console.log('Invalid'); return;
     }
 
-    // change format so it can be sent to database
     this.user = {
-      username: this.loginForm.controls.email.value,
-      password: this.loginForm.controls.password.value
+      username: this.emailForm.controls.email.value,
+      password: this.passwordForm.controls.password.value
     }
 
     this.authService.loginUser(this.user).subscribe(
       responce => {
         localStorage.setItem('token', responce.token)
-        this.router.navigate(['/app'])
-      }, error => console.log('Error: ', error)
-    );
+
+        this.router.navigate([''])
+      }, error => {
+        console.log('Error: ', error)
+        this.failed = true;
+      });
     // Implement feedback systsem here if passwords do not match, invalid email...
   }
+
+  // editPassword(): void {
+  //   this.passwordField.nativeElement.focus();
+  //   console.log("test");
+  // }
 
 }

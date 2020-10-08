@@ -7,19 +7,16 @@ import { LoggedOutGuard } from './auth/_guards/loggedout.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 
+import { HomeComponent } from './core/home/home.component';
 import { SettingsComponent } from './core/settings/settings.component';
 
 
 const routes: Routes = [
-  //{ path: '', redirectTo:'dash', pathMatch:'full' },
-
   { path: 'notauthorised', redirectTo:'login', pathMatch:'full' },
   { path: 'login', component: LoginComponent, canActivate: [LoggedOutGuard] },
-  { path: 'signup', component: RegisterComponent, canActivate: [LoggedOutGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [LoggedOutGuard] },
+  { path: '', component: HomeComponent, canActivate: [LoggedInGuard]},
   { path: 'settings', component: SettingsComponent, canActivate: [LoggedInGuard] },
-
-
-  //{ path: '**', redirectTo:'dash' }
 ];
 
 @NgModule({

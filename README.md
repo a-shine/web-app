@@ -202,53 +202,30 @@ Creating a new component:
 <span style='color:orange'>WARNING:</span>  You may experience some permission issues when editing file on your local machine (because the file were created `ng g <component/module/...>` in the container. 
 To solve this run: `sudo chown -R $USER:$USER .` on the local machine from the repository.
 
-### Pushing to production
+### Setting up production
 
-Once happy with the features implemented locally you can push them to production.
-
-1. First update the container images with the new code on AWS ECR.
-```
-./prod/scripts/update-ecr-repos
-```
-1. Update either the backend service, frontend service or both on AWS ECS using:
-```
-./prod/scripts/update-service <SERVICE NAME>
-```
-
-
-
-
-**Updating App**
-
-`aws ecs update-service --cluster <CLUSTER> --service <PROJECT> --force-new-deployment --region <REGION>`
-
-# New Workflow
+New New Workdflow
+1. Set values in create-ecr-repos and update-ecr-values
 Upload images to ECR
 1. run script to create ECR Registries
 `./scripts/create-ecr-repos.sh`
 2. build and push them with the following script
 `./scripts/update-ecr-repos.sh`
-
-`cd infra`
-
-`aws cloudformation create-stack --stack-name projectnVPC --template-body file://$PWD/vpc.yml`
-
+1. Upload iam.yml to AWS stack online
 `aws cloudformation create-stack --stack-name projectnIAM --template-body file://$PWD/iam.yml --capabilities CAPABILITY_IAM`
-
-`aws cloudformation create-stack --stack-name projectnCluster --template-body file://$PWD/cluster.yml`
-
-`aws cloudformation create-stack --stack-name projectnDatabse --template-body file://$PWD/database.yml`
-
-`aws cloudformation create-stack --stack-name projectnBkLB --template-body file://$PWD/backend-lb-sg.yml`
-
-`aws cloudformation create-stack --stack-name projectnFrLB --template-body file://$PWD/frontend-lb-sg.yml`
-
-`aws cloudformation create-stack --stack-name projectnBackendService --template-body file://$PWD/backend-service-task.yml`
-
-Make sure you set the RDS Database endpoint url  in the backend python server container env
-
-`aws cloudformation create-stack --stack-name projectnFrontendService --template-body file://$PWD/frontend-service-task.yml`
+1. Upload infra.yml and add values indicated to AWS Stack online (don't forget to add :latest tag to images)
+1. Because Angular is client side - it is not possible to dynamically set the APIUrl after you build the image so you will need to manually add the prod api url once it comes into existance during the cloudformation creation 
+	1. Once the whole infrastrastructure is up and running copy the Backend Service DNS Name and paste it into the frontend `environment.prod.ts` file (adding `http://` to the beggining
+	1. then update the image: `./script/update-ecr-image.sh` 
+	1. restart the frontend service: `aws ecs update-service --cluster <CLUSTER> --service frontend-service --force-new-deployment --region <REGION>`
 
 
-updating stack
+**Updating Stack:**
 `aws cloudformation update-stack --stackname <VALUE> --template-body <VALUE>`
+or from the AWS Web Interface
+
+### Pusing to production
+1. Update images `./scripts/update-ecr-repos.sh`
+1. Update service:
+	* backend: `aws ecs update-service --cluster <CLUSTER> --service backend-service --force-new-deployment --region <REGION>`
+	* frontend: `aws ecs update-service --cluster <CLUSTER> --service frontend-service --force-new-deployment --region <REGION>`

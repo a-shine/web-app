@@ -2,7 +2,7 @@
 
 AWS_REGION=us-east-1
 AWS_ACCOUNT_ID=433481609008
-ECR_PREFIX=project-n
+ECR_PREFIX=project-t
 
 # add check to make sure it only contimues if login is sucessful
 login_status=$(aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com)

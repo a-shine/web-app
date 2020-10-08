@@ -2,7 +2,7 @@
 
 AWS_PROFILE=default
 AWS_REGION=us-east-1
-ECR_PREFIX=project-n
+ECR_PREFIX=project-t
 
 containers=(backend-python-server backend-web-server frontend-web-server)
 for container in "${containers[@]}"

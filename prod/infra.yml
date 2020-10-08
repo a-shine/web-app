@@ -4,14 +4,12 @@ Description: General purpose Web Application on ECS Fargate
 Parameters:
   DBName:
     Default: MyDatabase
-    Description: Database Name
     Type: String
     MinLength: '1'
     MaxLength: '64'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: Must begin with a letter and contain only alphanumeric characters
   DBUser:
-    Description: Database admin account user
     Type: String
     MinLength: '1'
     MaxLength: '16'
@@ -19,7 +17,6 @@ Parameters:
     ConstraintDescription: Must begin with a letter and contain only alphanumeric characters
   DBPassword:
     NoEcho: 'true'
-    Description: Database admin account password
     Type: String
     MinLength: '1'
     MaxLength: '41'
@@ -27,13 +24,11 @@ Parameters:
     ConstraintDescription: Must contain only alphanumeric characters
   DBAllocatedStorage:
     Default: '5'
-    Description: Database Size (Gb)
     Type: Number
     MinValue: '5'
     MaxValue: '1024'
     ConstraintDescription: Must be between 5 and 1024Gb
   DBInstanceClass:
-    Description: Database Instance Type
     Type: String
     Default: db.t2.micro
     AllowedValues: [db.t1.micro, db.m1.small, db.m1.medium, db.m1.large, db.m1.xlarge,
@@ -43,19 +38,15 @@ Parameters:
       db.m2.2xlarge, db.m2.4xlarge, db.cr1.8xlarge, db.t2.micro, db.t2.small, db.t2.medium,
       db.t2.large]
     ConstraintDescription: Must select a valid database instance type
-  ECSCluster:
-    Description: ECS Cluster Name
+  ECSClusterName:
     Type: String
     MinLength: '1'
     MaxLength: '16'
   BackendPythonImage:
-    Description: Backend Python Server Image
     Type: String
   BackendWebImage:
-    Description: Backend Web Server Image
     Type: String
   FrontendWebImage:
-    Description: Frontend Web Server Image
     Type: String
     
 
@@ -137,23 +128,23 @@ Resources:
       DBInstanceClass: !Ref DBInstanceClass
       AllocatedStorage: !Ref DBAllocatedStorage
       VPCSecurityGroups:
-      - !Ref DBSecurityGroup
+        - !Ref DBSecurityGroup
 
   DbSubnetGroup:
-  Type: AWS::RDS::DBSubnetGroup
-  Properties: 
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
       DBSubnetGroupDescription: Database Subnet Group
       SubnetIds: 
-      - !Ref Subnet1
-      - !Ref Subnet2
+        - !Ref Subnet1
+        - !Ref Subnet2
 
   DBSecurityGroup:
-  Type: AWS::EC2::SecurityGroup
-  Properties:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
       GroupDescription: Security group for RDS Database
       VpcId: !Ref VPC
       SecurityGroupIngress:
-      - IpProtocol: tcp
+        - IpProtocol: tcp
           FromPort: 5432
           ToPort: 5432
           CidrIp: 0.0.0.0/0
@@ -162,15 +153,15 @@ Resources:
   #       ECS Cluster      #
   ##########################
 
- ECSCluster:
+  ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: !Ref ECSCluster 
+      ClusterName: !Ref ECSClusterName 
 
   CloudWatchLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Ref ECSCluster
+      LogGroupName: !Ref ECSClusterName
       RetentionInDays: 1
 
   ##########################
@@ -226,7 +217,7 @@ Resources:
   BkTaskDef:
     Type: AWS::ECS::TaskDefinition
     Properties:
-      Family: !Join [ '-', [!Ref ECSCluster, backend] ]
+      Family: !Join [ '-', [!Ref ECSClusterName, backend] ]
       Cpu: 256
       Memory: 512
       NetworkMode: awsvpc
@@ -240,29 +231,37 @@ Resources:
             - ContainerPort: 8000
               Protocol: tcp
           Environment:
-            Name: DB_ENDPOINT
-            Value: !Ref Database.Endpoint
+            - Name: DB_ENDPOINT
+              Value: !GetAtt Database.Endpoint.Address
+            - Name: DB_PORT
+              Value: !GetAtt Database.Endpoint.Port
+            - Name: DB_NAME
+              Value: !Ref DBName
+            - Name: DB_USER
+              Value: !Ref DBUser
+            - Name: DB_PASS
+              Value: !Ref DBPassword
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: !Ref ECSCluster
+              awslogs-group: !Ref ECSClusterName
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: 'backend-python-server'
         - Name: backend-web-server
           Image: !Ref BackendWebImage
           PortMappings:
-          - ContainerPort: 80
-            Protocol: tcp
+            - ContainerPort: 80
+              Protocol: tcp
           LogConfiguration:
             LogDriver: awslogs
             Options:
-                awslogs-group: !Ref ECSCluster
-                awslogs-region: !Ref AWS::Region
-                awslogs-stream-prefix: 'backend-web-server'
+              awslogs-group: !Ref ECSClusterName
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: 'backend-web-server'
 
   BkService:
     Type: AWS::ECS::Service
-    DependsOn: ListenerRule
+    DependsOn: BkListenerRule
     Properties:
       ServiceName: backend-service
       TaskDefinition: !Ref BkTaskDef
@@ -288,7 +287,7 @@ Resources:
   BkTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: backend-tg
+      Name: !Join [ '-', [!Ref ECSClusterName, backend, tg] ]
       VpcId: !Ref VPC
       Port: 80
       Protocol: HTTP
@@ -383,16 +382,16 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: !Ref ECSCluster
+              awslogs-group: !Ref ECSClusterName
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: 'frontend-web-server'
 
   FrService:
     Type: AWS::ECS::Service
-    DependsOn: ListenerRule
+    DependsOn: FrListenerRule
     Properties:
       ServiceName: frontend-service
-      TaskDefinition: !Ref TaskDef
+      TaskDefinition: !Ref FrTaskDef
       Cluster: !Ref ECSCluster
       LaunchType: FARGATE
       DesiredCount: 2
@@ -415,7 +414,7 @@ Resources:
   FrTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: frontend-tg
+      Name: !Join [ '-', [!Ref ECSClusterName, frontend, tg] ]
       VpcId: !Ref VPC
       Port: 80
       Protocol: HTTP

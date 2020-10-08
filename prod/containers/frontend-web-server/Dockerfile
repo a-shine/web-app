@@ -24,7 +24,6 @@ COPY ./frontend /usr/src/app
 
 # generate build
 RUN ng build --prod --output-path=dist
-# RUN ng build --output-path=dist
 
 ############
 ### prod ###

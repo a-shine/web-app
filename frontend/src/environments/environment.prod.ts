@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  apiURL: ''
+  apiURL: 'http://backend-1644357980.us-east-1.elb.amazonaws.com'
 };
 
 /*
