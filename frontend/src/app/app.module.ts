@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -18,7 +20,8 @@ import { CoreModule } from './core/core.module';
     AppRoutingModule,
     AuthModule,
     CoreModule,
-    SharedModule
+    SharedModule,
+    MatPasswordStrengthModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

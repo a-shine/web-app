@@ -4,6 +4,8 @@ import { SharedModule } from '../shared/shared.module';
 
 import { HttpClientModule } from '@angular/common/http';
 
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+
 // Angular Material
 import {MatCardModule} from '@angular/material/card';
 import {MatStepperModule} from '@angular/material/stepper';
@@ -25,6 +27,7 @@ import { LogoutComponent } from './logout/logout.component';
     MatInputModule,
     MatStepperModule,
     MatFormFieldModule,
+    MatPasswordStrengthModule,
   ],
   exports: [ LogoutComponent, RegisterComponent, LoginComponent ],
   providers: [ AuthService ]

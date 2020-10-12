@@ -21,12 +21,14 @@
                 placeholder="Email"
                 formControlName="email"
                 required
+                #email
               />
               <button
                 mat-icon-button
                 matSuffix
                 [disabled]="emailForm.invalid"
                 matStepperNext
+                (click)="this.focusInput(1)"
               >
                 <mat-icon>arrow_forward</mat-icon>
               </button>
@@ -44,6 +46,7 @@
                 placeholder="Password"
                 formControlName="password"
                 required
+                #password
               />
               <button
                 mat-icon-button

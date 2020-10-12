@@ -1,21 +1,21 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router'
-import { FormGroup, FormControl, Validators, FormBuilder} from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  providers: [ AuthService ]
+  providers: [AuthService]
 })
 export class LoginComponent implements OnInit {
   // @ViewChild("password") passwordField: ElementRef;
-  emailForm:FormGroup;
+  emailForm: FormGroup;
   passwordForm: FormGroup;
-  failed:boolean = false;
+  failed: boolean = false;
 
-  constructor(private router:Router, private authService:AuthService, private formBuilder: FormBuilder) { }
+  constructor(private router: Router, private authService: AuthService, private formBuilder: FormBuilder) { }
   user;
 
   ngOnInit(): void {
@@ -25,14 +25,17 @@ export class LoginComponent implements OnInit {
     this.passwordForm = this.formBuilder.group({
       password: new FormControl(null, Validators.required)
     })
+    setTimeout(() => {
+      this.focusInput(0);
+    }, 250);
   }
 
-  moveToRegister(){
+  moveToRegister() {
     this.router.navigate(['/signup']);
   }
 
-  login(){
-    if (!this.emailForm.valid || !this.passwordForm.valid){
+  login() {
+    if (!this.emailForm.valid || !this.passwordForm.valid) {
       console.log('Invalid'); return;
     }
 
@@ -53,9 +56,19 @@ export class LoginComponent implements OnInit {
     // Implement feedback systsem here if passwords do not match, invalid email...
   }
 
-  // editPassword(): void {
-  //   this.passwordField.nativeElement.focus();
-  //   console.log("test");
-  // }
-
+  @ViewChild("email") emailField: ElementRef;
+  @ViewChild("password") passwordField: ElementRef;
+  focusInput(field: number): void {
+    switch (field) {
+      case 0: {
+        this.emailField.nativeElement.focus();
+        break;
+      } case 1: {
+        setTimeout(() => {
+          this.passwordField.nativeElement.focus();
+        }, 250);
+        break;
+      }
+    }
+  }
 }

@@ -11,53 +11,35 @@
       <form [formGroup]="registerForm">
         <mat-form-field appearance="outline">
           <mat-label>First Name</mat-label>
-          <input
-            type="text"
-            matInput
-            placeholder="First Name"
-            formControlName="firstName"
-            required
-          />
+          <input #firstName type="text" matInput placeholder="First Name" formControlName="firstName" required (keyup.enter)="focusInput(1)"/>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Last Name</mat-label>
-          <input
-            type="text"
-            matInput
-            placeholder="Last Name"
-            formControlName="lastName"
-            required
-          />
+          <input #lastName type="text" matInput placeholder="Last Name" formControlName="lastName" required (keyup.enter)="focusInput(2)"/>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
-          <input
-            type="email"
-            matInput
-            placeholder="Email"
-            formControlName="email"
-            required
-          />
+          <input #email type="email" matInput placeholder="Email" formControlName="email" required (keyup.enter)="focusInput(3)"/>
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" [color]="passwordComponent.color">
           <mat-label>Password</mat-label>
-          <input
-            type="password"
-            matInput
-            placeholder="Password"
-            formControlName="password"
-            required
-          />
+          <mat-pass-toggle-visibility #toggle matSuffix></mat-pass-toggle-visibility>
+          <input #password [type]="toggle.type" matInput placeholder="Password" formControlName="password" required #password maxlength="25" (keyup.enter)="focusInput(4)"/>
+          <mat-hint align="end" aria-live="polite">
+            {{password.value.length}} / 25
+          </mat-hint>
         </mat-form-field>
+        <div style="margin-bottom: 15px;">
+        <mat-password-strength #passwordComponent (onStrengthChanged)="onStrengthChanged($event)"
+          [password]="password.value">
+        </mat-password-strength>
+        <!--Password's strength info-->
+        <mat-password-strength-info *ngIf="showDetails" [passwordComponent]="passwordComponent">
+        </mat-password-strength-info>
+      </div>
         <mat-form-field appearance="outline">
           <mat-label>Confirm Password</mat-label>
-          <input
-            type="password"
-            matInput
-            placeholder="Confirm Password"
-            formControlName="confirmPassword"
-            required
-          />
+          <input #passwordConfirmed type="password" matInput placeholder="Confirm Password" formControlName="confirmPassword" required />
         </mat-form-field>
       </form>
       <button mat-button (click)="register()" style="float: right;" [disabled]="registerForm.invalid">Register</button>
