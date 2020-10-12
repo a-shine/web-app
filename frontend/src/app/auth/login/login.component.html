@@ -1,8 +1,5 @@
-<div class=x_centered>
-  <mat-card
-    style="width: 600px;"
-    class="mat-elevation-z0"
-  >
+<div class="form-container">
+  <mat-card style="width: 600px; border:2px solid black" class="mat-elevation-z0">
     <mat-card-title>Login</mat-card-title>
     <mat-card-content>
       <a [routerLink]="['/register']">Create an account</a>
@@ -15,21 +12,9 @@
             <ng-template matStepLabel>Fill in your email</ng-template>
             <mat-form-field appearance="outline">
               <mat-label>Email</mat-label>
-              <input
-                type="email"
-                matInput
-                placeholder="Email"
-                formControlName="email"
-                required
-                #email
-              />
-              <button
-                mat-icon-button
-                matSuffix
-                [disabled]="emailForm.invalid"
-                matStepperNext
-                (click)="this.focusInput(1)"
-              >
+              <input type="email" matInput placeholder="Email" formControlName="email" required #email />
+              <button mat-icon-button matSuffix [disabled]="emailForm.invalid" matStepperNext
+                (click)="this.focusInput(1)">
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </mat-form-field>
@@ -40,20 +25,8 @@
             <ng-template matStepLabel>Fill in your password</ng-template>
             <mat-form-field appearance="outline">
               <mat-label>Password</mat-label>
-              <input
-                type="password"
-                matInput
-                placeholder="Password"
-                formControlName="password"
-                required
-                #password
-              />
-              <button
-                mat-icon-button
-                matSuffix
-                [disabled]="passwordForm.invalid"
-                (click)="login()"
-              >
+              <input type="password" matInput placeholder="Password" formControlName="password" required #password />
+              <button mat-icon-button matSuffix [disabled]="passwordForm.invalid" (click)="login()">
                 <mat-icon>done</mat-icon>
               </button>
             </mat-form-field>

@@ -1,12 +1,21 @@
-.x_centered {
-    height: 100%;
-    width: 100%;
-  
-    display: flex;
-  
-    justify-content: center;
-    align-items: center;
-  }
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.form-container {
+  height: 90%;
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+}
   
   a {
     color: rgba(0, 0, 0, 0.67);
