@@ -182,18 +182,13 @@ You can create a Django Admin user:
 
 **`frontend` (Angular/Node) service**
 
-Installing npm packages:
+Installing `npm`/`ng` packages:
 1. `docker-compose run frontend bash`
-1. `npm install <package>`
+1. `npm install <package>` or `ng <command>`
 1. Exit by running `exit` command
 1. `docker-compose down`
 1. `docker-compose build`
 1. `docker-compose up`
-
-Running ng commands:
-1. `docker-compose run frontend bash`
-1. `ng <command>`
-1. Exit by running `exit` command
 
 Creating a new module:
 
@@ -204,28 +199,42 @@ To solve this run: `sudo chown -R $USER:$USER .` on the local machine from the r
 
 ### Setting up production
 
+Pre-requisites: 
+* Install aws-cli
+* Authenticate aws-cli
+
 New New Workdflow
 1. Set values in create-ecr-repos and update-ecr-values
 Upload images to ECR
-1. run script to create ECR Registries
+1. from `/prod` dir run script to create ECR Registries
 `./scripts/create-ecr-repos.sh`
-2. build and push them with the following script
+2. from `/prod` dir build and push them with the following script
 `./scripts/update-ecr-repos.sh`
 1. Upload iam.yml to AWS stack online
-`aws cloudformation create-stack --stack-name projectnIAM --template-body file://$PWD/iam.yml --capabilities CAPABILITY_IAM`
+`aws cloudformation create-stack --stack-name ecsIAM --template-body file://$PWD/iam.yml --capabilities CAPABILITY_IAM --region <REGION>`
 1. Upload infra.yml and add values indicated to AWS Stack online (don't forget to add :latest tag to images)
 1. Because Angular is client side - it is not possible to dynamically set the APIUrl after you build the image so you will need to manually add the prod api url once it comes into existance during the cloudformation creation 
 	1. Once the whole infrastrastructure is up and running copy the Backend Service DNS Name and paste it into the frontend `environment.prod.ts` file (adding `http://` to the beggining
 	1. then update the image: `./script/update-ecr-image.sh` 
-	1. restart the frontend service: `aws ecs update-service --cluster <CLUSTER> --service frontend-service --force-new-deployment --region <REGION>`
+	1. restart the frontend service: <FOLLOW INSTRUCTIONS in Pushing to production (below), update service, frontend >
 
 
 **Updating Stack:**
-`aws cloudformation update-stack --stackname <VALUE> --template-body <VALUE>`
-or from the AWS Web Interface
+`aws cloudformation update-stack --stackname <VALUE> --template-body <VALUE>` or from the AWS Web Interface
 
 ### Pusing to production
-1. Update images `./scripts/update-ecr-repos.sh`
+1. Authenticate with the aws-cli.
+1. `cd prod/` directory (having to actively move into the `prod/` directory is a security measure to prevent accidental pushing updates - the ECR Repositories can only be updated from within the `prod/` directory).
+1. from within the prod dir () Update images `./scripts/update-ecr-repos.sh`
 1. Update service:
-	* backend: `aws ecs update-service --cluster <CLUSTER> --service backend-service --force-new-deployment --region <REGION>`
-	* frontend: `aws ecs update-service --cluster <CLUSTER> --service frontend-service --force-new-deployment --region <REGION>`
+	* backend: 
+		1. `aws ecs update-service --cluster <CLUSTER> --service backend-service --force-new-deployment --region <REGION> --desired-count 2`
+		1. `./scripts/stop-old-service.sh <CLUSTER> <REGION> backend-service` - Stops old tasks, which will then be replaced by new updated tasks where the image will be reassede and updated
+	* frontend:
+		1. `aws ecs update-service --cluster <CLUSTER> --service frontend-service --force-new-deployment --region <REGION> --desired-count 2`
+		1. `./scripts/stop-old-service.sh <CLUSTER> <REGION> frontend-service` - Stops old tasks, which will then be replaced by new updated tasks where the image will be reassede and updated
+
+To scale up you can increase the desired count and the load balancer while balance between all the different tasks. This can also be done in an automated fashion using Cloud Watch (see Service Auto Scalling documentation)
+
+### Notes
+Added PWA compatibility: https://medium.com/poka-techblog/turn-your-angular-app-into-a-pwa-in-4-easy-steps-543510a9b626
