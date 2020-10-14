@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 AWS_PROFILE=default
-AWS_REGION=us-east-1
-ECR_PREFIX=project-t
+AWS_REGION=<REGION>
+ECR_PREFIX=<ECR_PREFIX>
 
 containers=(backend-python-server backend-web-server frontend-web-server)
 for container in "${containers[@]}"

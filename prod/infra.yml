@@ -269,7 +269,7 @@ Resources:
       LaunchType: FARGATE
       DesiredCount: 2
       DeploymentConfiguration:
-        MaximumPercent: 200
+        MaximumPercent: 100
         MinimumHealthyPercent: 70
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -396,7 +396,7 @@ Resources:
       LaunchType: FARGATE
       DesiredCount: 2
       DeploymentConfiguration:
-        MaximumPercent: 200
+        MaximumPercent: 100
         MinimumHealthyPercent: 70
       NetworkConfiguration:
         AwsvpcConfiguration:
