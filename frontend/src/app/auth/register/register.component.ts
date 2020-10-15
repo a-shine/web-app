@@ -31,9 +31,6 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     this.showDetails = true;
-    setTimeout(() => {
-      this.focusInput(0);
-    }, 250);
   }
 
   moveToLogin() {
