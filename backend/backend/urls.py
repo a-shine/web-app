@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.conf.urls import url, include
+from django.urls import include, path
 
 from rest_framework import routers
 
@@ -13,9 +13,9 @@ router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
-  url(r'^admin/', admin.site.urls),
-  url(r'^health_check/', include('health_check.urls')),
-  url(r'^user/', include('user.urls')),
+  path('admin/', admin.site.urls),
+  path('health_check/', include('health_check.urls')),
+  path('user/', include('user.urls')),
 ]
 
 # if settings.DEBUG:

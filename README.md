@@ -340,6 +340,10 @@ This can also be done in an automated fashion using Cloud Watch (see Service Aut
 
 ### Useful Links
 
+#### Recomended GitHub Template repository workflow
+
+https://stackoverflow.com/questions/56577184/github-pull-changes-from-a-template-repository
+
 #### Enabling HTTPS
 
 Medium tutorial: https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
